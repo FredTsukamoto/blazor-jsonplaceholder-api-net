@@ -1,0 +1,37 @@
+﻿@page "/"
+@using BlazorUsersJsonPlaceHolderApi.Models
+@inject HttpClient Http
+
+<PageTitle>Usuários</PageTitle>
+
+<h1>Primeiro usuário da API</h1>
+
+@if (primeiro is null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <p><strong>Nome:</strong> @primeiro.Name</p>
+    <p><strong>Cidade:</strong> @primeiro.Address.City</p>
+    <p><strong>Empresa:</strong> @primeiro.Company.Name</p>
+}
+
+@code {
+    private User? primeiro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var usuarios = await Http.GetFromJsonAsync<List<User>>(
+            "https://jsonplaceholder.typicode.com/users");
+
+        primeiro = usuarios?.FirstOrDefault();
+
+        if (primeiro is not null)
+        {
+            Console.WriteLine($"Nome: {primeiro.Name}");
+            Console.WriteLine($"Cidade: {primeiro.Address.City}");
+            Console.WriteLine($"Empresa: {primeiro.Company.Name}");
+        }
+    }
+}
